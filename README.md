@@ -12,9 +12,11 @@ This model is then compared to an Azure AutoML run.
 
 ## Summary
 **In 1-2 sentences, explain the problem statement: e.g "This dataset contains data about... we seek to predict..."**
+
 This dataset contains data about subjects from various socio-economic backgrounds, and we seek to predict whether these subjects would agree to take part in a bank's marketing campaign. We choose to tackle this ML problem through logistic regression and classification. 
 
 **In 1-2 sentences, explain the solution: e.g. "The best performing model was a ..."**
+
 The best performing model was with AutoML, where the VotingEnsemble pipeline (iteration 24) yielded an accuracy of 91.6%. 
 The accuracy from this autoML model was 0.4% higher than that of the best run from the logistic regression model w/ HyperDrive tuning (which yielded an accuracy of 91.2%). 
 Although autoML yielded a slightly better result, the difference in accuracy between the two models may not be extremely significant. 
@@ -22,41 +24,48 @@ Although autoML yielded a slightly better result, the difference in accuracy bet
 
 ## Scikit-learn Pipeline
 **Explain the pipeline architecture, including data, hyperparameter tuning, and classification algorithm.**
+
 The SKLearn pipline uses 'train.py' as its entry script, logistic regression as its ML model of choice, and HyperDrive for its hyperparameter tuning. 
 ### What train.py handles in the pipeline: 
-- Function `clean_data` is defined. It cleans the raw data by dropping NA values, dropping unwanted volumns (e.g. job, contact, education), one-hot-encoding categorical values in certain columns (e.g. marital, default, housing, loan, poutcome), and one-hot-encoding the y variable (e.g. column named 'y').
-- Function `main` is defined. It imports raw data via `TabularDatasetFactory.from_delimited_files()` method, called the `clean_data()` to clean the raw data, splits the data into train/test distributions via `sklearn.model_selection.train_test_split()`, creates a Logistic Regression model with paramters C and max_iter., fits the training dataset to it, and predicts the accuracy of the model by passing in the testing dataset.  
+- Function `clean_data` is defined. It cleans the raw data by dropping NA values, dropping unwanted columns (e.g. job, contact, education), one-hot-encoding categorical values in certain columns (e.g. marital, default, housing, loan, poutcome), and one-hot-encoding the y variable (e.g. column named 'y').
+- Function `main` is defined. It imports raw data via `TabularDatasetFactory.from_delimited_files()` method, calls the `clean_data()` to clean the raw data, splits the data into train/test distributions via `sklearn.model_selection.train_test_split()`, creates a Logistic Regression model with parameters C and max_iter., fits the training dataset to it, and predicts the accuracy of the trained model by passing in the testing dataset.  
 
 ### What does HyperDrive handle in the pipeline:
-- Within the Jupyter notebook, the HyperDrive configurations are defined. The parameter sampler, primary metric, early stopping policy, max number of runs, and estimator are passed in here.
+- Within the Jupyter notebook, the HyperDrive configurations are defined. The parameter sampler, primary metric, early stopping policy, max number of runs, and estimator are passed in here (as seen in the screenshot below): 
+![image](https://user-images.githubusercontent.com/50812346/147689359-1080a479-22b5-452e-8dda-92a3e6dc9149.png)
 
 ### What else is a part of the pipeline:
 - Run the hyperdrive model via calling `exp.submit()` and passing in the hyperdrive configurations into the method. 
 - After training and testing the model, we call `get_best_run_by_primary_metric` to fetch the best run model, and `register_model()` to save the best run model. 
 
 **What are the benefits of the parameter sampler you chose?**
-I chose to use the default sampler that was already imported into the notebook cell, which was the RandomParameterSampling sampler. Since this sampler enables random selection of hyperparameters (discrete and/or continuous), this allows us to assess a wide range of values that would help yield the best performing model. 
+I chose to use the default sampler that was already imported into the notebook cell, which was the RandomParameterSampling sampler. Since this sampler enables random selection of hyperparameters (discrete and/or continuous), this adds the benefit of assessing a wide range of values that would help yield the best performing model. This reduces a lot of guess work on the ML Engineers side too.
 
 **What are the benefits of the early stopping policy you chose?**
-I chose to use the BanditPolicy early stopping policy, which was already imported by deault into the notebook. This policy terminates any runs where the primary metric (e.g. accuracy) does not meet the bounds of the best performing run's slack factor. The BanditPolicy ensures us to return models that are better than the last best performing one, and would not waste time running iterations on one that isn't performing as well.
+I chose to use the BanditPolicy early stopping policy, which was already imported by deault into the notebook. This policy terminates any runs where the primary metric (e.g. accuracy) does not meet the bounds of the best performing run's slack factor. The BanditPolicy ensures us to return models that are better than the last best performing one, and would not waste time running iterations on ones that aren't performing as well. So, all in all, the benefit of this early stopping policy is that we are guaranteed to get the best performing model, since it is actively looking for models that surpass that of the last best performing models' metrics' threshold. 
 
 ## AutoML
 **In 1-2 sentences, describe the model and hyperparameters generated by AutoML.**
-AutoML generates multiple models throughout its run. It's configured to do classification for no more than the allotted time (which was 30min in our case), with accuracy as its primary metric, and it's enabled for early stopping. Most of the models its generated its best metric at 91.48%, with Voting Ensemble as the only model yielding a 91.64%.
+
+AutoML generates multiple models throughout its run. In this notebook, it's configured to do classification for no more than the allotted time (which was 30min in our case), with accuracy as its primary metric, and it's enabled for early stopping (as shown in the screenshot below): 
+![image](https://user-images.githubusercontent.com/50812346/147689252-db51d1cb-3f38-460b-b4c3-0903027bd623.png)
+
+
+Most of the models its generated has a best metric of 91.48%, with Voting Ensemble as the only model yielding a 91.64% (shown in the screenshot below):
+![image](https://user-images.githubusercontent.com/50812346/147692670-40803f49-a4b5-4e3b-9cf5-1aabe81334c7.png)
+
 
 ## Pipeline comparison
 **Compare the two models and their performance. What are the differences in accuracy? In architecture? If there was a difference, why do you think there was one?**
-In terms of accuracy, (also -- as stated in the `Summary` section of this README.md) the AutoML's best model came from the VotingEnsemble pipeline, yielding an accuracy of 91.6%, compared to that of logistic regression w/ HyperDrive tuning which yielded an accuracy of 91.2%. In terms of architecture, the SKLearn pipeline only trains and tests its data on logistic regression while AutoML trains and tests its data on multiple models. Overall, I am unsure how significant a 0.4% difference is between the two models. However, since AutoML results faired better, I am assuming it is because of its ability to assess multiple models' accuracy in a short amount of time, rather than just logistic regression.
+In terms of accuracy, (also -- as stated in the `Summary` section of this README.md) the AutoML's best model came from the VotingEnsemble pipeline, yielding an accuracy of 91.6%, compared to that of logistic regression w/ HyperDrive tuning which yielded an accuracy of 91.2%. In terms of architecture, the SKLearn pipeline only trains and tests its data on logistic regression, while AutoML trains and tests its data on multiple models. Overall, I am unsure of how significant a 0.4% difference is between the two models. However, since AutoML results faired better, I am assuming it is because of its ability to assess multiple models' accuracy in a short amount of time, rather than just logistic regression.
 
 ## Future work
 **What are some areas of improvement for future experiments? Why might these improvements help the model?**
-Collecting more data, and mitigating class imbalance would help reduce bias in the model, therefore producing a model that can predict better.  
-AutoML is killer. I assume with longer runtimes, and possibly with a bigger dataset, it would do a more comprehensive assessment of which models yield better results. 
+
+In terms of data collection and preprocessing, -- and if we were to stick with the same dataset -- I think collecting more data would serve to train our model better. Also, mitigating class imbalance within the data would help reduce bias in the model, therefore producing a model that can predict better. On the other hand, if we are choosing to redefine our dataset, I would research what other features we have not yet accounted for, that may be helpful in predicting whether a subject will part take in a bank marketing campaign. For example, we can always collect surveyed information of whether subjects are in good standing with banks (e.g. have a financial career, have good credit score, related to financiers, major shareholders of banks, etc.), and if this would affect their decision in partaking on a bank marketing campaign.
+In terms of model training with AutoML, I am curious what a bigger dataset and a longer runtime would do in training the model. Since it's automated process is quite comprehensive, I would do utilize autoML to the max.  
+In terms of model training with HyperDrive tuning, we can try using different parameter sampler, and early stopping policies to see what results they yield. 
 
 ## Proof of cluster clean up
-Cluster cleanup code 
-I did not include the cluster cleanup code in the notebook, so I am completing it here in this section.
-```
-compute_target.delete()
-```
-Since I did not run it in the notebook, I do not have an image of the cluster marked for deletion.
+![image](https://user-images.githubusercontent.com/50812346/147692226-b9a56dc8-491f-4957-9341-6cbe5a47db07.png)
+
