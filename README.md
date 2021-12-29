@@ -98,7 +98,7 @@ In terms of model training, I am curious what a bigger dataset and a longer runt
 
 ## Proof of cluster clean up
 
-(I hoped on the VM again to run this cell, just for you!)
+(I hopped on the VM again to run this cell, just for you!)
 
 ![image](https://user-images.githubusercontent.com/50812346/147692226-b9a56dc8-491f-4957-9341-6cbe5a47db07.png)
 
