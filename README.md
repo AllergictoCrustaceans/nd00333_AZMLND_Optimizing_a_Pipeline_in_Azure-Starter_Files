@@ -85,10 +85,14 @@ In terms of accuracy, (also -- as stated in the `Summary` section of this README
 ## Future work
 **What are some areas of improvement for future experiments? Why might these improvements help the model?**
 
+While model parameter tuning is important, collecting and preprocessing useful data is just as, if not more, important. I would focus more on defining our data properties clearly, cleaning our data in a consistent manner, as I think this is what makes/breaks a good model.
+
 In terms of data collection and preprocessing, -- and if we were to stick with the same dataset -- I think collecting more data would serve to train our model better. Also, mitigating class imbalance within the data would help reduce bias in the model, therefore producing a model that can predict better. On the other hand, if we are choosing to redefine our dataset, I would research what other features we have not yet accounted for, that may be helpful in predicting whether a subject will part take in a bank marketing campaign. For example, we can always collect surveyed information of whether subjects are in good standing with banks (e.g. have a financial career, have good credit score, related to financiers, major shareholders of banks, etc.), and if this would affect their decision in partaking on a bank marketing campaign.
-In terms of model training with AutoML, I am curious what a bigger dataset and a longer runtime would do in training the model. Since it's automated process is quite comprehensive, I would do utilize autoML to the max.  
-In terms of model training with HyperDrive tuning, we can try using different parameter sampler, and early stopping policies to see what results they yield. 
+
+In terms of model training, I am curious what a bigger dataset and a longer runtime would do in training the model. Since autoML's run process is quite comprehensive, I would utilize autoML to the max, and see what better results it can yield given that we've defined our dataset features/values more clearly. As for training our model with HyperDrive tuning, we can try setting different parameter samplers, and different early stopping policies most optimal to logistic regression to see what better results they yield as well.
 
 ## Proof of cluster clean up
+
+(I hoped on the VM again to run this cell, just for you!)
 ![image](https://user-images.githubusercontent.com/50812346/147692226-b9a56dc8-491f-4957-9341-6cbe5a47db07.png)
 
