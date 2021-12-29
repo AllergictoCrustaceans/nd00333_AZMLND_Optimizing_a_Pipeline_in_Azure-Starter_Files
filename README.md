@@ -32,8 +32,10 @@ The SKLearn pipline uses 'train.py' as its entry script, logistic regression as 
 
 ### What does HyperDrive handle in the pipeline:
 Within the Jupyter notebook, the HyperDrive tuning needs to be configured before its run (shown in screenshot below):
-As you can see, some of the parameters set for us to fill in include:
+
 ![image](https://user-images.githubusercontent.com/50812346/147689359-1080a479-22b5-452e-8dda-92a3e6dc9149.png)
+
+As you can see, some of the parameters set for us to fill in include:
 - `hyperparameter_sampling`: the specified hyperparameter sampling space
 - `primary_metric_name`: the primary metric to be assessed during experiemntal runs 
 - `primary_metric_goal`: The parameter associated to the primary metric (in the case of "Accuracy", we specify whether to maziminize/minimize this metric when evaluating runs)
@@ -57,6 +59,7 @@ I chose to use the BanditPolicy early stopping policy, which was already importe
 AutoML needs to be configured before it's executed to run.(as shown in the screenshot below): 
 
 ![image](https://user-images.githubusercontent.com/50812346/147689252-db51d1cb-3f38-460b-b4c3-0903027bd623.png)
+
 As you can see, some of the parameters set for us to fill in include:
 - `experiemnt_timeout_minutes`: allowing autoML to run for no more than the allotted time
 - `task`: the type of task this autoML experiment will do
@@ -68,11 +71,13 @@ As you can see, some of the parameters set for us to fill in include:
 - `enable_onnx_compatible_models`: boolean that ensures models to be converted as onnx models
 
 Most of the models its generated has a best metric of 91.47%, with Voting Ensemble as the only model yielding a 91.60% (shown in the screenshot below):
+
 ![image](https://user-images.githubusercontent.com/50812346/147696722-9485dd55-3543-4bba-b166-a59de6f52865.png)
 
 As you can see, autoML generates a series of models throughout its run, self-evaluating which model yields the best metrics. This eliminates the time an ML Engineer would normally spend, of manually setting and tuning parameters one training model at a time.
 
 It also outputs which features most impactful in training the best model. 
+
 ![image](https://user-images.githubusercontent.com/50812346/147692670-40803f49-a4b5-4e3b-9cf5-1aabe81334c7.png)
 
 In our case, it seems like `duration` makes up for than 50% of feature importance.
@@ -94,5 +99,6 @@ In terms of model training, I am curious what a bigger dataset and a longer runt
 ## Proof of cluster clean up
 
 (I hoped on the VM again to run this cell, just for you!)
+
 ![image](https://user-images.githubusercontent.com/50812346/147692226-b9a56dc8-491f-4957-9341-6cbe5a47db07.png)
 
